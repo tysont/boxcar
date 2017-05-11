@@ -1,0 +1,67 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.box = "bento/ubuntu-16.10"
+  # config.vm.synced_folder "../data", "/vagrant_data"
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "public_network"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y xfce4 lightdm lightdm-gtk-greeter xfce4-terminal xfce4-whiskermenu-plugin xfce4-taskmanager
+  SHELL
+
+  config.vm.provider "virtualbox" do |vb|
+    config.vm.provision "shell", inline: "apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11"
+  end
+
+  config.vm.provider "vmware_fusion" do |v|
+    config.vm.provision "shell", inline: "apt-get install -y open-vm-tools open-vm-tools-desktop"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    
+    apt-get remove -y --purge xscreensaver
+    apt-get autoremove -y --purge
+    service lightdm start
+    startxfce4&  
+
+    apt-get -y install zsh
+    sed 's|DSHELL=.*$|DSHELL='$(which zsh)'|g' /etc/adduser.conf
+    chsh -s $(which zsh)
+    sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+    apt-get -y install libxss1 libappindicator1 libindicator7
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dpkg -i google-chrome-stable_current_amd64.deb
+    apt-get -y install -f
+    dpkg -i google-chrome-stable_current_amd64.deb
+
+
+
+  SHELL
+
+
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+  end
+
+  config.vm.provider "vmware_fusion" do |v|
+    v.gui = true
+  end
+
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+end 
+
+
+
+
