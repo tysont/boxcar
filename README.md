@@ -1,3 +1,5 @@
+*Images to quickly bootstrap different environments (eg. my development environment).*
+
 ## Local Environment Setup:
 
 1. Install [Vagrant](https://www.vagrantup.com/downloads.html).
