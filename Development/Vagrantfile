@@ -3,8 +3,29 @@
 
 
 Vagrant.configure("2") do |config|
-  
+
+  hostUsername = ENV['USERNAME']
+  puts "Host username: " + hostUsername
+
+  hostHome = ENV['HOME']
+  puts "Host home: " + hostHome
+
+  puts "Guest username: "
+  guestUsername = STDIN.gets.chomp
+
+  guestPassword = "password"
+  puts "Guest temporary password: " + guestPassword
+
+  guestHome = "/home/" + guestUsername
+  puts "Guest home: " + guestHome
+
+  mappedHome = "/opt/share/home"
+
+  puts "mkdir " + File.join(guestHome, ".ssh")
+  puts "ln -s " + File.join(mappedHome, ".ssh/*") + " " + File.join(guestHome, ".ssh")
+
   config.vm.box = "bento/ubuntu-16.10"
+  config.vm.synced_folder hostHome, mappedHome
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 8192
@@ -19,8 +40,7 @@ Vagrant.configure("2") do |config|
     v.vmx["vramsize"] = "134217728"
     v.gui = true
   end  
-
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
   # config.vm.network "private_network", ip: "192.168.33.10"
@@ -80,16 +100,19 @@ Vagrant.configure("2") do |config|
 
   SHELL
 
+  config.vm.provision "shell", inline: "adduser --disabled-password " + guestUsername
+  config.vm.provision "shell", inline: "echo " + guestUsername + ":" + guestPassword + " | chpasswd"
+  config.vm.provision "shell", inline: "adduser " + guestUsername + " sudo"
+  config.vm.provision "shell", inline: "adduser " + guestUsername + " docker"
+
+  config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, ".ssh")
+  config.vm.provision "shell", inline: "ln -s " + File.join(mappedHome, ".ssh/*") + " " + File.join(guestHome, ".ssh")
+
   # config.push.define "atlas" do |push|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
 end 
 
-# Post provisioning stuff...
-# create user
-# set pw
-# add user to sudo
-# add user to docker
 
 
