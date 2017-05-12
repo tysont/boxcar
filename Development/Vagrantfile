@@ -5,6 +5,21 @@
 Vagrant.configure("2") do |config|
   
   config.vm.box = "bento/ubuntu-16.10"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 8192
+    v.cpus = 2
+    v.customize ["modifyvm", :id, "--vram", "128"]
+    v.gui = true
+  end
+
+  config.vm.provider "vmware_fusion" do |v|
+    v.vmx["memsize"] = "8192"
+    v.vmx["numvcpus"] = "2"
+    v.vmx["vramsize"] = "134217728"
+    v.gui = true
+  end  
+
   # config.vm.synced_folder "../data", "/vagrant_data"
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
@@ -12,15 +27,17 @@ Vagrant.configure("2") do |config|
   # config.vm.network "public_network"
 
   config.vm.provision "shell", inline: <<-SHELL
+
     apt-get update
     apt-get install -y xfce4 lightdm lightdm-gtk-greeter xfce4-terminal xfce4-whiskermenu-plugin xfce4-taskmanager
+
   SHELL
 
-  config.vm.provider "virtualbox" do |vb|
+  config.vm.provider "virtualbox" do
     config.vm.provision "shell", inline: "apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11"
   end
 
-  config.vm.provider "vmware_fusion" do |v|
+  config.vm.provider "vmware_fusion" do
     config.vm.provision "shell", inline: "apt-get install -y open-vm-tools open-vm-tools-desktop"
   end
 
@@ -36,25 +53,32 @@ Vagrant.configure("2") do |config|
     chsh -s $(which zsh)
     sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
+    wget https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz
+    tar -C /opt -xzf go1.8.1.linux-amd64.tar.gz
+    ln -s /opt/go/bin/* /usr/local/bin
+
+    wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8-b132/jdk-8-linux-x64.tar.gz
+    tar -C /opt -xzf jdk-8-linux-x64.tar.gz
+    ln -s /opt/jdk1.8.0/bin/* /usr/local/bin
+
+    apt-get -y install nodejs npm
+
+    apt-get -y install apt-transport-https ca-certificates  
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    apt-get update
+    apt-get -y install docker-ce
+
+    apt-get -y install python-pip
+    pip install --upgrade --user awscli
+
     apt-get -y install libxss1 libappindicator1 libindicator7
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     dpkg -i google-chrome-stable_current_amd64.deb
     apt-get -y install -f
     dpkg -i google-chrome-stable_current_amd64.deb
 
-
-
   SHELL
-
-
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = true
-  end
-
-  config.vm.provider "vmware_fusion" do |v|
-    v.gui = true
-  end
 
   # config.push.define "atlas" do |push|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
@@ -62,6 +86,10 @@ Vagrant.configure("2") do |config|
 
 end 
 
-
+# Post provisioning stuff...
+# create user
+# set pw
+# add user to sudo
+# add user to docker
 
 
