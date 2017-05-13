@@ -5,6 +5,8 @@
 Vagrant.configure("2") do |config|
 
   guestHostname = "development"
+  guestUsername = ""
+  guestPassword = ""
 
   if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/" + guestHostname + "/*").empty? || ARGV[1] == '--provision'
     
@@ -24,6 +26,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "bento/ubuntu-16.10"
   config.vm.synced_folder hostHome, mappedHome
+
+  config.vm.define guestHostname
 
   config.vm.provider "virtualbox" do |v|
     v.name = guestHostname
@@ -63,15 +67,15 @@ Vagrant.configure("2") do |config|
 
   #config.vm.provision :shell, :path => "provision-vagrant.sh", :args => [username, password]
 
-  config.vm.provision "shell", path: "InstallTermite.sh"
-  config.vm.provision "shell", path: "InstallZsh.sh"
-  config.vm.provision "shell", path: "InstallGo.sh"
-  config.vm.provision "shell", path: "InstallJava.sh"
-  config.vm.provision "shell", path: "InstallNode.sh"
-  config.vm.provision "shell", path: "InstallDocker.sh"
-  config.vm.provision "shell", path: "InstallAws.sh"
-  config.vm.provision "shell", path: "InstallChrome.sh"
-  config.vm.provision "shell", path: "InstallSublime.sh"
+  config.vm.provision "shell", path: "Install/InstallZsh.sh"
+  config.vm.provision "shell", path: "Install/InstallTermite.sh"
+  config.vm.provision "shell", path: "Install/InstallGo.sh"
+  config.vm.provision "shell", path: "Install/InstallJava.sh"
+  config.vm.provision "shell", path: "Install/InstallNode.sh"
+  config.vm.provision "shell", path: "Install/InstallDocker.sh"
+  config.vm.provision "shell", path: "Install/InstallAws.sh"
+  config.vm.provision "shell", path: "Install/InstallChrome.sh"
+  config.vm.provision "shell", path: "Install/InstallSublime.sh"
 
   config.vm.provision "shell", inline: "adduser --disabled-password " + guestUsername
   config.vm.provision "shell", inline: "echo " + guestUsername + ":" + guestPassword + " | chpasswd"
