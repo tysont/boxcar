@@ -1,6 +1,7 @@
- #!/bin/bash
+#!/bin/bash
 
- apt-get -y install zsh
- sed 's|DSHELL=.*$|DSHELL='$(which zsh)'|g' /etc/adduser.conf
- chsh -s $(which zsh)
- sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+apt-get -y install zsh
+sed -i 's|DSHELL=.*$|DSHELL='$(which zsh)'|g' /etc/adduser.conf
+wget --no-check-certificate https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh 
+chsh -s $(which zsh)
+zsh
