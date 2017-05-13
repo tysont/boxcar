@@ -1,1 +1,0 @@
-{"virtualbox":{"/opt/share/home":{"guestpath":"/opt/share/home","hostpath":"C:/Users/Tyson","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/Tyson/Images/Development","disabled":false,"__vagrantfile":true}}}
