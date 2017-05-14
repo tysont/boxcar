@@ -1,0 +1,4 @@
+
+# Fix CRLF line endings
+*.sh text
+* text=auto
