@@ -4,9 +4,14 @@
 
 Vagrant.configure("2") do |config|
 
+  hostUsername = ENV['USERNAME']
+  hostHome = ENV['HOME']
+  mountHome = "/mnt/home"
+
   guestHostname = "development"
   guestUsername = ""
   guestPassword = ""
+  guestHome = ""
 
   if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/" + guestHostname + "/*").empty? || ARGV[1] == '--provision'
     
@@ -17,15 +22,12 @@ Vagrant.configure("2") do |config|
     guestPassword = STDIN.gets.chomp
     print "\n"
 
+    guestHome = File.join("/home/", guestUsername)
+
   end
   
-  guestHome = File.join("/home/", guestUsername)
-  hostUsername = ENV['USERNAME']
-  hostHome = ENV['HOME']
-  mappedHome = "/opt/share/home"
-
   config.vm.box = "bento/ubuntu-16.10"
-  config.vm.synced_folder hostHome, mappedHome
+  config.vm.synced_folder hostHome, mountHome
 
   config.vm.define guestHostname
 
@@ -66,16 +68,15 @@ Vagrant.configure("2") do |config|
   SHELL
 
   #config.vm.provision :shell, :path => "provision-vagrant.sh", :args => [username, password]
-
-  config.vm.provision "shell", path: "Install/InstallZsh.sh"
-  config.vm.provision "shell", path: "Install/InstallTermite.sh"
-  config.vm.provision "shell", path: "Install/InstallGo.sh"
-  config.vm.provision "shell", path: "Install/InstallJava.sh"
-  config.vm.provision "shell", path: "Install/InstallNode.sh"
-  config.vm.provision "shell", path: "Install/InstallDocker.sh"
-  config.vm.provision "shell", path: "Install/InstallAws.sh"
-  config.vm.provision "shell", path: "Install/InstallChrome.sh"
-  config.vm.provision "shell", path: "Install/InstallSublime.sh"
+  
+  config.vm.provision "shell", path: "Provision/Termite.sh"
+  config.vm.provision "shell", path: "Provision/Go.sh"
+  config.vm.provision "shell", path: "Provision/Java.sh"
+  config.vm.provision "shell", path: "Provision/Node.sh"
+  config.vm.provision "shell", path: "Provision/Docker.sh"
+  config.vm.provision "shell", path: "Provision/Aws.sh"
+  config.vm.provision "shell", path: "Provision/Chrome.sh"
+  config.vm.provision "shell", path: "Provision/Sublime.sh"
 
   config.vm.provision "shell", inline: "adduser --disabled-password " + guestUsername
   config.vm.provision "shell", inline: "echo " + guestUsername + ":" + guestPassword + " | chpasswd"
@@ -83,10 +84,12 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: "adduser " + guestUsername + " docker"
 
   config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, ".ssh")
-  config.vm.provision "shell", inline: "ln -s " + File.join(mappedHome, ".ssh/*") + " " + File.join(guestHome, ".ssh")
+  config.vm.provision "shell", inline: "ln -s " + File.join(mountHome, ".ssh/*") + " " + File.join(guestHome, ".ssh")
 
   config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, "Workspaces")
   config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, "Workspaces/go")
+
+  config.vm.provision "shell", path: "Login/Shell.sh"
 
   # config.push.define "atlas" do |push|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
@@ -97,6 +100,9 @@ Vagrant.configure("2") do |config|
   # config.vm.network "private_network", ip: "192.168.33.10"
   # config.vm.network "public_network"
 
+  # sed -i 's/# export PATH/export PATH/' /home/tysont/.zshrc
+  # sed -i '1s/^/export GOPATH=$HOME\/Workspaces\/go\n/' /home/tysont/.zshrc
+  # sed -i '1s/^/export GOROOT=\/opt\/go\n/' /home/tysont/.zshrc
 
 end 
 
