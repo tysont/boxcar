@@ -6,12 +6,11 @@ echo "Running provision scripts."
 LOGPATH="/var/log/provision.log"
 SCRIPTPATH="/vagrant/Provision"
 
-for file in "$SCRIPTPATH/*"; do
+for file in $SCRIPTPATH/*; do
     if [ -f "$file" ] && [ -x "$file" ]; then
     	
-    	echo "Running provision steps in $file..."
-    	echo "Running provision steps in $file..." > $LOGPATH
-    	exec $file > $LOGPATH
+    	echo "Running provision steps in $file..." | tee $LOGPATH
+    	exec $file | tee $LOGPATH
     	
     fi
 done
