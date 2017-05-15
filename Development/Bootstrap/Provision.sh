@@ -1,16 +1,30 @@
 #!/bin/bash
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
-echo "Running provision scripts."
+installpath="/vagrant/Install"
+logpath="/var/log/provision.log"
 
-LOGPATH="/var/log/provision.log"
-SCRIPTPATH="/vagrant/Provision"
+exec > >(tee -a "$logpath") 2>&1
 
-for file in $SCRIPTPATH/*; do
-    if [ -f "$file" ] && [ -x "$file" ]; then
-    	
-    	echo "Running provision steps in $file..." | tee $LOGPATH
-    	exec $file | tee $LOGPATH
-    	
-    fi
-done
+provider="$1"
+echo "Provisioning for provider '$provider'."
+
+echo "Installing desktop environment."
+apt-get update
+apt-get install -y xfce4 lightdm lightdm-gtk-greeter xfce4-terminal xfce4-whiskermenu-plugin xfce4-taskmanager
+
+if [ "$provider" = "virtualbox" ]; then
+    apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+fi
+
+if [ "$provider" = "vmware_fusion" ]; then
+  apt-get install -y open-vm-tools open-vm-tools-desktop
+fi
+
+apt-get remove -y --purge xscreensaver
+apt-get autoremove -y --purge
+service lightdm start
+startxfce4&
+
+echo "Installing software by running installation scripts."
+run-parts $installpath --regex=[A-Za-z0-9]*.sh
