@@ -1,13 +1,10 @@
 
 # if first login
-if [ ! -f  /etc/usr/local/first ]; then
-  
-  chsh -s $(which zsh)
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" 
-
-  [ -d /etc/usr/local ] || mkdir -p /etc/usr/local
-  touch /etc/usr/local/first
-
+first="$HOME/.first"
+if [ ! -f  "$firstFile" ]; then
+  run-parts /vagrant/Configure --"regex=[A-Za-z0-9]*.sh"
+  run-parts /vagrant/Cleanup --"regex=[A-Za-z0-9]*.sh"
+  touch "$firstFile"
 fi
 
 # if running bash

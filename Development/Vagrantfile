@@ -58,29 +58,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell" do |s|
     s.path = "Bootstrap/Provision.sh"
-    s.args   = [provider]
+    s.args   = [provider, guestUsername, guestPassword, guestHome, mountHome]
     s.binary = true
   end
-
-  config.vm.provision "shell", inline: "adduser " + guestUsername + " --disabled-password --gecos \",,,\"" 
-  config.vm.provision "shell", inline: "echo " + guestUsername + ":" + guestPassword + " | chpasswd"
-  config.vm.provision "shell", inline: "adduser " + guestUsername + " sudo"
-  config.vm.provision "shell", inline: "adduser " + guestUsername + " docker"
-
-  config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, ".ssh")
-  config.vm.provision "shell", inline: "ln -s " + File.join(mountHome, ".ssh/*") + " " + File.join(guestHome, ".ssh")
-
-  config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, "Workspaces")
-  config.vm.provision "shell", inline: "mkdir " + File.join(guestHome, "Workspaces/go")
-
-  config.vm.provision "shell", path: "Login/Shell.sh"
-
-  # config.push.define "atlas" do |push|
-  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
-  # end
-
-  # sed -i 's/# export PATH/export PATH/' /home/tysont/.zshrc
-  # sed -i '1s/^/export GOPATH=$HOME\/Workspaces\/go\n/' /home/tysont/.zshrc
-  # sed -i '1s/^/export GOROOT=\/opt\/go\n/' /home/tysont/.zshrc
 
 end 
