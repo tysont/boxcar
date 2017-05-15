@@ -4,8 +4,8 @@
 
 Vagrant.configure("2") do |config|
 
-  guestHostname = "development"
   config.vm.box = "bento/ubuntu-16.10"
+  guestHostname = "development"
   config.vm.define guestHostname
 
   guestUsername = ""
