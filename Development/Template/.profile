@@ -2,8 +2,8 @@
 # if first login
 first="$HOME/.first"
 if [ ! -f  "$firstFile" ]; then
-  run-parts /vagrant/Configure --"regex=[A-Za-z0-9]*.sh"
-  run-parts /vagrant/Cleanup --"regex=[A-Za-z0-9]*.sh"
+  run-parts /vagrant/Login --"regex=[A-Za-z0-9]*.sh"
+  run-parts /vagrant/Finalize --"regex=[A-Za-z0-9]*.sh"
   touch "$firstFile"
 fi
 
