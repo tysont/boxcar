@@ -58,6 +58,10 @@ mountHome="$5"
 echo "Bootstrapping login configuration and cleanup."
 cp /vagrant/Template/.profile "$guestHome/.profile"
 
-echo "Mapping files and folders between '$mountHome' and '$guestHome'."
-[ ! -f "$guestHome/.ssh" ] || mkdir -p "$guestHome/.ssh"
-ln -s "$mountHome/.ssh/*" "$guestHome/.ssh"
+#echo "Mapping files and folders between '$mountHome' and '$guestHome'."
+#[ ! -f "$guestHome/.ssh" ] || mkdir -p "$guestHome/.ssh"
+
+#ln -s "$mountHome/.ssh/*" "$guestHome/.ssh"
+#chown "$guestUsername" "$guestHome/.ssh"
+
+
