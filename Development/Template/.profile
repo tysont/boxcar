@@ -4,7 +4,8 @@ first="$HOME/.first"
 if [ ! -f  "$firstFile" ]; then
   run-parts /vagrant/Login --"regex=[A-Za-z0-9]*.sh"
   run-parts /vagrant/Finalize --"regex=[A-Za-z0-9]*.sh"
-  touch "$firstFile"
+  #sed -i '1s#^#export SSH_AUTH_SOCK=\n#' $HOME/.zshrc
+  touch $firstFile
 fi
 
 # if running bash
@@ -23,3 +24,4 @@ fi
 
 # set PATH
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+

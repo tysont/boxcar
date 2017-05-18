@@ -13,7 +13,7 @@ apt-get install -y xfce4 lightdm lightdm-gtk-greeter xfce4-terminal xfce4-whiske
 provider="$1"
 echo "Installing specific services for provider '$provider'."
 if [ "$provider" = "virtualbox" ]; then
-    apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+  apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
 fi
 
 if [ "$provider" = "vmware_fusion" ]; then
@@ -31,6 +31,9 @@ run-parts $installpath --regex=[A-Za-z0-9]*.sh
 guestUsername="$2"
 guestPassword="$3"
 
+guestHome="$4"
+mountHome="$5"
+
 if [ -n "$guestUsername" ]; then
 
 	echo "Creating user '$guestUsername'."
@@ -46,22 +49,14 @@ if [ -n "$guestUsername" ]; then
 	adduser "$guestUsername" sudo
 	adduser "$guestUsername" docker # Should eventually go elsewhere since this is app specific
 
+	echo "Bootstrapping login configuration and cleanup."
+	cp /vagrant/Template/.profile "$guestHome/.profile"
+
+	#setfacl -m "u:$guestUsername:rwx" $SSH_AUTH_SOCK
+	#setfacl -m "u:$guestUsername:rwx" $(dirname $SSH_AUTH_SOCK)
+	#echo "sed -i 's#export SSH_AUTH_SOCK=.*#export SSH_AUTH_SOCK=$SSH_AUTH_SOCK#' $guestHome/.zshrc" >> $guestHome/.profile
+
 else
 
 	echo "Skipping creating user since username was empty."
-
 fi
-
-guestHome="$4"
-mountHome="$5"
-
-echo "Bootstrapping login configuration and cleanup."
-cp /vagrant/Template/.profile "$guestHome/.profile"
-
-#echo "Mapping files and folders between '$mountHome' and '$guestHome'."
-#[ ! -f "$guestHome/.ssh" ] || mkdir -p "$guestHome/.ssh"
-
-#ln -s "$mountHome/.ssh/*" "$guestHome/.ssh"
-#chown "$guestUsername" "$guestHome/.ssh"
-
-
