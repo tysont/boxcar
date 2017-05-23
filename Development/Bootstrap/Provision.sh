@@ -25,8 +25,8 @@ apt-get autoremove -y --purge
 service lightdm start
 startxfce4&
 
-#echo "Installing software by running installation scripts."
-#run-parts $installpath --regex=[A-Za-z0-9]*.sh
+echo "Installing software by running installation scripts."
+run-parts $installpath --regex=[A-Za-z0-9]*.sh
 
 guestUsername="$2"
 guestPassword="$3"
@@ -51,20 +51,6 @@ if [ -n "$guestUsername" ]; then
 
 	echo "Bootstrapping login configuration and cleanup."
 	cp /vagrant/Template/.profile "$guestHome/.profile"
-
-	#setfacl -m "u:$guestUsername:rwx" $SSH_AUTH_SOCK
-	#setfacl -m "u:$guestUsername:rwx" $(dirname $SSH_AUTH_SOCK)
-	#echo "sed -i 's#export SSH_AUTH_SOCK=.*#export SSH_AUTH_SOCK=$SSH_AUTH_SOCK#' $guestHome/.zshrc" >> $guestHome/.profile
-
-
-	echo "Copying certs and updating permissions."
-	mkdir "$guestHome/.ssh"
-	cp "$mountHome/.ssh/*" "$guestHome/.ssh"
-	chown "$guestUsername" "$guestHome/.ssh/*"
-
-	chmod 700 "$guestHome/.ssh"
-	chmod 600 "$guestHome/.ssh/id_rsa"
-	chmod 644 "$guestHome/.ssh/id_rsa.pub"
 
 else
 
