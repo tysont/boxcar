@@ -1,4 +1,4 @@
 
 # Fix CRLF line endings
-*.sh text
+*.sh text eol=lf
 * text=auto
