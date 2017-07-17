@@ -50,7 +50,7 @@ if [ -n "$guestUsername" ]; then
 	adduser "$guestUsername" docker # Should eventually go elsewhere since this is app specific
 
 	echo "Bootstrapping login configuration and cleanup."
-	cp /vagrant/Template/.profile "$guestHome/.profile"
+	cp /vagrant/Templates/.profile "$guestHome/.profile"
 
 else
 
