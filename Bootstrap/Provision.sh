@@ -51,6 +51,7 @@ if [ -n "$guestUsername" ]; then
 
 	echo "Bootstrapping login configuration and cleanup."
 	cp /vagrant/Templates/.profile "$guestHome/.profile"
+	cp /vagrant/Bootstrap/Authenticate.sh "$guestHome/"
 
 else
 
