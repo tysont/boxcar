@@ -1,4 +1,5 @@
 
+
 # if first login
 firstFile="$HOME/.first"
 if [ ! -f  "$firstFile" ]; then
