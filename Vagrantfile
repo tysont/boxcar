@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
   end   
 
   config.vm.provision "shell" do |s|
-    s.path = "Bootstrap/Provision.sh"
+    s.path = "Build/Bootstrap/Provision.sh"
     s.args   = [provider, guestUsername, guestPassword, guestHome, mountHome]
     s.binary = true
   end

@@ -1,8 +1,10 @@
 #!/bin/bash
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
-installpath="/vagrant/Build/Install"
+scriptpath="/vagrant/Build/"
+installpath="$scriptpath/Install"
 logpath="/var/log/provision.log"
+
 
 exec > >(tee -a "$logpath") 2>&1
 
@@ -53,8 +55,8 @@ if [ -n "$guestUsername" ]; then
 	adduser "$guestUsername" docker # Should eventually go elsewhere since this is app specific
 
 	echo "Bootstrapping login configuration and cleanup."
-	cp /vagrant/Templates/.profile "$guestHome/.profile"
-	cp /vagrant/Bootstrap/Authenticate.sh "$guestHome/"
+	cp $scriptpath/Templates/.profile "$guestHome/.profile"
+	cp $scriptpath/Bootstrap/Authenticate.sh "$guestHome/"
 
 else
 
