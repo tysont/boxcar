@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
-installpath="/vagrant/Install"
+installpath="/vagrant/Build/Install"
 logpath="/var/log/provision.log"
 
 exec > >(tee -a "$logpath") 2>&1
@@ -26,7 +26,10 @@ service lightdm start
 startxfce4&
 
 echo "Installing software by running installation scripts."
-run-parts $installpath --regex=[A-Za-z0-9]*.sh
+for f in $installpath/*.sh; do
+  echo "Running '$f'."
+  bash "$f" -H   || break
+done
 
 guestUsername="$2"
 guestPassword="$3"
