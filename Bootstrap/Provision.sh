@@ -2,6 +2,7 @@
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
 scriptpath="/vagrant/Build/"
+preinstallpath="$scriptpath/Preinstall"
 installpath="$scriptpath/Install"
 logpath="/var/log/provision.log"
 
@@ -26,6 +27,12 @@ apt-get remove -y --purge xscreensaver
 apt-get autoremove -y --purge
 service lightdm start
 startxfce4&
+
+echo "Installing software by running pre-installation scripts."
+for f in $preinstallpath/*.sh; do
+  echo "Running '$f'."
+  bash "$f" -H   || break
+done
 
 echo "Installing software by running installation scripts."
 for f in $installpath/*.sh; do
