@@ -1,32 +1,12 @@
 #!/bin/bash
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
-scriptpath="/vagrant/Build/"
+scriptpath="/vagrant/Scripts"
 preinstallpath="$scriptpath/Preinstall"
 installpath="$scriptpath/Install"
 logpath="/var/log/provision.log"
 
-
 exec > >(tee -a "$logpath") 2>&1
-
-echo "Installing desktop environment."
-apt-get update
-apt-get install -y xfce4 lightdm lightdm-gtk-greeter xfce4-terminal xfce4-whiskermenu-plugin xfce4-taskmanager
-
-provider="$1"
-echo "Installing specific services for provider '$provider'."
-if [ "$provider" = "virtualbox" ]; then
-  apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
-fi
-
-if [ "$provider" = "vmware_fusion" ]; then
-  apt-get install -y open-vm-tools open-vm-tools-desktop
-fi
-
-apt-get remove -y --purge xscreensaver
-apt-get autoremove -y --purge
-service lightdm start
-startxfce4&
 
 echo "Installing software by running pre-installation scripts."
 for f in $preinstallpath/*.sh; do
@@ -39,6 +19,8 @@ for f in $installpath/*.sh; do
   echo "Running '$f'."
   bash "$f" -H   || break
 done
+
+apt autoremove
 
 guestUsername="$2"
 guestPassword="$3"

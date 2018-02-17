@@ -1,11 +1,21 @@
 
 
+scriptpath="/vagrant/Scripts"
+loginpath="$scriptpath/Login"
+finalizepath="$scriptpath/Finalize"
+
 # if first login
 firstFile="$HOME/.first"
-
 if [ ! -f  "$firstFile" ]; then
-  run-parts /vagrant/Build/Login --"regex=[A-Za-z0-9]*.sh"
-  run-parts /vagrant/Build/Finalize --"regex=[A-Za-z0-9]*.sh"
+	for f in $loginpath/*.sh; do
+	  echo "Running '$f'."
+	  bash "$f" -H   || break
+	done
+
+	for f in $finalizepath/*.sh; do
+	  echo "Running '$f'."
+	  bash "$f" -H   || break
+	done  
   touch $firstFile
 fi
 

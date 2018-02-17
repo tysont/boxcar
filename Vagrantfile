@@ -4,9 +4,10 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "bento/ubuntu-16.10"
+  #config.vm.box = "bento/ubuntu-16.10"
   #config.vm.box = "bento/ubuntu-17.10"
-  #config.vm.box_version = "201710.25.0"
+  #config.vm.box = "andrzejsydor/xubuntu-desktop-17.10-64"
+  config.vm.box = "artem-sidorenko/mint-18.3-cinnamon"
   guestHostname = "development"
   config.vm.define guestHostname
 
@@ -62,7 +63,7 @@ Vagrant.configure("2") do |config|
   end   
 
   config.vm.provision "shell" do |s|
-    s.path = "Build/Bootstrap/Provision.sh"
+    s.path = "Scripts/Bootstrap/Provision.sh"
     s.args   = [provider, guestUsername, guestPassword, guestHome, mountHome]
     s.binary = true
   end
