@@ -48,7 +48,8 @@ Vagrant.configure("2") do |config|
     v.memory = 8192
     v.cpus = 2
     v.customize ["modifyvm", :id, "--vram", "128"]
-    v.customize ['modifyvm', :id, '--clipboard', 'bidirectional']  
+    v.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
+    v.customize ["modifyvm", :id, "--accelerate3d", "on"]  
     v.gui = true
     provider = "virtualbox"
   end
