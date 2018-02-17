@@ -71,3 +71,5 @@ fi
 
 gpasswd -d vagrant nopasswdlogin
 usermod -a -G nopasswdlogin $guestUsername
+sed -i 's/AutomaticLogin=vagrant/AutomaticLogin=$guestUsername/' /etc/mdm/mdm.conf
+sed -i 's/TimedLogin=vagrant/TimedLogin=$guestUsername/' /etc/mdm/mdm.conf
