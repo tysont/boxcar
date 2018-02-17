@@ -3,4 +3,4 @@ if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi
 
 wget https://download.jetbrains.com/go/goland-2017.3.2.tar.gz
 tar -C /opt -xzf goland-2017.3.2.tar.gz
-ln -s /opt/goland-2017.3.2/bin/goland.sh /usr/bin/goland
+ln -s /opt/GoLand-2017.3.2/bin/goland.sh /usr/bin/goland
