@@ -63,6 +63,7 @@ if [ -n "$guestUsername" ]; then
 	mkdir $guestHome/Scripts
 	cp $scriptpath/Bootstrap/Authenticate.sh "$guestHome/Scripts"
 	cp $scriptpath/Bootstrap/Login.sh "$guestHome/Scripts"
+	chown -R $guestUsername $mountHome
 
 else
 

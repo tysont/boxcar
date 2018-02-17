@@ -5,6 +5,7 @@ scriptpath="/$HOME/Scripts"
 firstFile="$HOME/.first"
 if [ ! -f  "$firstFile" ]; then
   . "$scriptpath/Login.sh"
+  . "$scriptpath/Authenticate.sh"
   touch $firstFile
 fi
 
