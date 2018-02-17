@@ -2,22 +2,36 @@
 if [ "$OSTYPE" = "cygwin" ]; then (set -o igncr) 2>/dev/null && set -o igncr; fi # Cygwin CRLF fix
 
 scriptpath="/vagrant/Scripts"
+templatepath="/vagrant/Templates"
 preinstallpath="$scriptpath/Preinstall"
 installpath="$scriptpath/Install"
 logpath="/var/log/provision.log"
 
 exec > >(tee -a "$logpath") 2>&1
 
+echo "Installing desktop environment."
+apt-get update
+
+provider="$1"
+echo "Installing specific services for provider '$provider'."
+if [ "$provider" = "virtualbox" ]; then
+  apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+fi
+
+if [ "$provider" = "vmware_fusion" ]; then
+  apt-get install -y open-vm-tools open-vm-tools-desktop
+fi
+
 echo "Installing software by running pre-installation scripts."
-for f in $preinstallpath/*.sh; do
-  echo "Running '$f'."
-  bash "$f" -H   || break
+for file in $preinstallpath/*; do
+	  echo "Running '$file'."
+      [ -f "$file" ] && [ -x "$file" ] && "$file" || true
 done
 
 echo "Installing software by running installation scripts."
-for f in $installpath/*.sh; do
-  echo "Running '$f'."
-  bash "$f" -H   || break
+for file in $installpath/*; do
+	  echo "Running '$file'."
+      [ -f "$file" ] && [ -x "$file" ] && "$file" || true
 done
 
 apt autoremove
@@ -44,10 +58,16 @@ if [ -n "$guestUsername" ]; then
 	adduser "$guestUsername" docker # Should eventually go elsewhere since this is app specific
 
 	echo "Bootstrapping login configuration and cleanup."
-	cp $scriptpath/Templates/.profile "$guestHome/.profile"
-	cp $scriptpath/Bootstrap/Authenticate.sh "$guestHome/"
+	cp $templatepath/.profile "$guestHome/.profile"
+
+	mkdir $guestHome/Scripts
+	cp $scriptpath/Bootstrap/Authenticate.sh "$guestHome/Scripts"
+	cp $scriptpath/Bootstrap/Login.sh "$guestHome/Scripts"
 
 else
 
 	echo "Skipping creating user since username was empty."
 fi
+
+gpasswd -d vagrant nopasswdlogin
+usermod -a -G nopasswdlogin $guestUsername
